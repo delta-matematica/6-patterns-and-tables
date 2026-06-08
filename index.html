@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patterns Interactive Guide - Fixed Practice Tests</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#071a33;--navy2:#0b2545;--navy3:#031020;
+  --cyan:#38d9ff;--gold:#f9c74f;--gold2:#f8961e;
+  --green:#22c55e;--red:#ef4444;--soft:rgba(255,255,255,.095);
+  --border:rgba(255,255,255,.18)
+}
+body{
+  width:100vw;height:100vh;background:#020617;display:flex;justify-content:center;align-items:center;
+  font-family:"Segoe UI",Arial,sans-serif;overflow:hidden
+}
+.canvas{
+  width:min(100vw,177.78vh);height:min(56.25vw,100vh);position:relative;overflow:hidden;color:white;
+  background:radial-gradient(circle at 12% 10%,rgba(56,217,255,.22),transparent 25%),
+             radial-gradient(circle at 88% 82%,rgba(249,199,79,.15),transparent 28%),
+             linear-gradient(135deg,var(--navy),var(--navy2) 48%,var(--navy3));
+  box-shadow:0 0 42px rgba(0,0,0,.65)
+}
+.canvas:before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:42px 42px;mask-image:radial-gradient(circle at center,black 52%,transparent 91%);
+  pointer-events:none
+}
+.slide{width:100%;height:100%;display:none;position:absolute;inset:0;padding:4% 6%;z-index:1}
+.active{display:flex;flex-direction:column}.centered{justify-content:center;align-items:center}
+button{
+  border:none;cursor:pointer;font-family:inherit;font-weight:800;letter-spacing:.35px;
+  transition:transform .2s ease,background .2s ease,box-shadow .2s ease
+}
+button:hover{transform:translateY(-2px)}button:disabled{cursor:default;transform:none}
+.copyright{
+  position:absolute;bottom:2%;left:0;width:100%;text-align:center;color:rgba(255,255,255,.72);
+  font-size:clamp(.9rem,1.25vw,1.15rem);z-index:3
+}
+.pill{
+  display:inline-flex;align-items:center;justify-content:center;padding:10px 24px;border-radius:999px;
+  background:rgba(56,217,255,.16);color:#9beeff;border:1px solid rgba(56,217,255,.45);
+  font-size:clamp(.8rem,1.1vw,1.05rem);text-transform:uppercase;letter-spacing:2px;font-weight:800
+}
+.gold-btn{
+  padding:14px 42px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#08213f;font-size:clamp(.95rem,1.25vw,1.15rem);box-shadow:0 10px 26px rgba(248,150,30,.32)
+}
+.blue-btn{
+  padding:12px 30px;border-radius:999px;background:rgba(14,165,233,.96);color:white;
+  font-size:clamp(.82rem,1.1vw,1rem)
+}
+.finish-btn{
+  padding:10px 22px;border-radius:999px;background:linear-gradient(135deg,var(--green),#16a34a);color:white;
+  font-size:clamp(.75rem,1vw,.95rem)
+}
+.opening-card{
+  width:80%;height:60%;border-radius:34px;background:rgba(255,255,255,.085);
+  border:1px solid var(--border);box-shadow:0 28px 70px rgba(0,0,0,.36);
+  backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4%;text-align:center
+}
+.opening-card h1{
+  margin-top:2.5%;font-size:clamp(3.8rem,7.1vw,7rem);line-height:.95;letter-spacing:3px;
+  text-shadow:0 0 24px rgba(56,217,255,.32)
+}
+.opening-card h1 span{color:var(--gold)}
+.opening-card p{margin:2.2% 0 4%;max-width:850px;color:#d9efff;font-size:clamp(1.05rem,1.55vw,1.45rem);line-height:1.45}
+.floating-math{position:absolute;color:rgba(255,255,255,.075);font-weight:900;font-family:"Cambria Math","Times New Roman",serif;pointer-events:none}
+.fm1{top:11%;left:7%;font-size:clamp(2.5rem,5vw,5rem)}.fm2{top:16%;right:8%;font-size:clamp(2.2rem,4.2vw,4.3rem)}
+.fm3{bottom:15%;left:9%;font-size:clamp(2.2rem,4vw,4.1rem)}.fm4{bottom:18%;right:10%;font-size:clamp(2.4rem,4.8vw,4.9rem)}
+.menu-header{text-align:center;margin-top:1%;margin-bottom:3%}
+.menu-header h1{font-size:clamp(2.4rem,4.7vw,4.5rem);letter-spacing:1px;margin-top:1.2%}
+.menu-header p{color:#cfe9ff;font-size:clamp(1rem,1.35vw,1.25rem);margin-top:.8%}
+.topic-grid{width:90%;height:43%;display:grid;grid-template-columns:repeat(3,1fr);gap:2.4%;margin:0 auto}
+.topic-card{
+  height:100%;border-radius:30px;background:rgba(255,255,255,.09);border:1px solid var(--border);
+  box-shadow:0 20px 46px rgba(0,0,0,.28);color:white;padding:7%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center
+}
+.topic-card:hover{background:rgba(255,255,255,.135)}
+.topic-icon{
+  width:clamp(66px,7vw,96px);height:clamp(66px,7vw,96px);border-radius:26px;
+  background:rgba(56,217,255,.14);border:1px solid rgba(56,217,255,.34);
+  display:flex;align-items:center;justify-content:center;margin-bottom:6%;font-size:clamp(2rem,3.2vw,3.3rem);color:var(--gold)
+}
+.topic-card h2{font-size:clamp(1.25rem,2vw,1.8rem);margin-bottom:5%}
+.topic-card p{color:#d7ecff;font-size:clamp(.82rem,1.13vw,1.05rem);line-height:1.42;font-weight:500}
+.lesson-card{
+  width:88%;height:68%;border-radius:34px;background:rgba(255,255,255,.095);border:1px solid var(--border);
+  box-shadow:0 24px 58px rgba(0,0,0,.34);padding:3.6% 4.2%;
+  display:grid;grid-template-columns:1.18fr .98fr;grid-template-rows:1fr auto;gap:3.2% 3.5%;align-items:center
+}
+.lesson-left{height:100%;display:flex;flex-direction:column;justify-content:center}
+.lesson-left h2{font-size:clamp(2.2rem,4.2vw,4rem);line-height:1;margin:2.2% 0 3.5%}
+.lesson-left p{color:#d9efff;font-size:clamp(1rem,1.4vw,1.28rem);line-height:1.5}
+.lesson-actions{grid-column:1/-1;display:flex;justify-content:center;align-items:center;gap:18px;padding-top:.6%}
+.lesson-actions .gold-btn,.lesson-actions .blue-btn{min-width:190px;text-align:center}
+.math-showcase,.table-showcase{
+  width:100%;min-height:72%;border-radius:28px;background:rgba(2,6,23,.36);
+  border:1px solid rgba(56,217,255,.2);display:flex;flex-direction:column;justify-content:center;
+  padding:5.5%;text-align:center
+}
+.showcase-label{color:#9beeff;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;font-size:clamp(.78rem,1vw,.95rem);margin-bottom:5%}
+.math-seq{
+  display:inline-block;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-size:clamp(1.55rem,2.65vw,2.6rem);font-weight:650;letter-spacing:.03em;color:#fff;
+  padding:18px 18px;border-radius:22px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);
+  white-space:nowrap;width:100%
+}
+.showcase-rule,.table-rule{margin-top:5%;font-size:clamp(1.05rem,1.45vw,1.35rem);color:#ffe082;font-weight:800}
+.pattern-table,.problem-table{
+  width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:18px;
+  border:1px solid rgba(255,255,255,.18);box-shadow:0 16px 35px rgba(0,0,0,.22);
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif
+}
+.pattern-table td,.problem-table td{
+  width:16.66%;height:clamp(48px,4.7vw,68px);text-align:center;vertical-align:middle;
+  font-size:clamp(1.15rem,1.9vw,1.85rem);font-weight:700;color:#fff;background:rgba(255,255,255,.09);
+  border-right:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)
+}
+.pattern-table tr:last-child td,.problem-table tr:last-child td{border-bottom:none}
+.pattern-table td:last-child,.problem-table td:last-child{border-right:none}
+.label-cell{
+  background:linear-gradient(135deg,rgba(56,217,255,.28),rgba(14,165,233,.18))!important;
+  color:#9beeff!important;font-style:italic;font-size:clamp(1.35rem,2.25vw,2.15rem)!important
+}
+.missing-cell{color:#ffe082!important;font-weight:900!important;letter-spacing:1px!important}
+.problem-top{height:12%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;z-index:2}
+.problem-top h2{font-size:clamp(1.8rem,3vw,3rem);letter-spacing:.4px}
+.top-actions{display:flex;gap:12px;align-items:center}
+.progress-wrap{width:100%;height:11px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden;margin:1.2% 0 2.2%;border:1px solid rgba(255,255,255,.1)}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:999px;transition:width .25s ease}
+.problem-layout,.table-problem-layout{
+  width:100%;height:63%;display:grid;grid-template-columns:1.45fr .72fr;gap:2.2%;z-index:2
+}
+.question-panel,.choices-panel,.table-question-panel,.table-choices-panel{
+  border-radius:30px;background:rgba(255,255,255,.095);border:1px solid var(--border);box-shadow:0 20px 48px rgba(0,0,0,.30)
+}
+.question-panel,.table-question-panel{
+  padding:7.5% 4.5% 5%;position:relative;display:flex;align-items:center;justify-content:center
+}
+.question-number{
+  position:absolute;top:5%;left:5%;padding:10px 22px;border-radius:999px;
+  background:rgba(249,199,79,.2);color:#ffe082;border:1px solid rgba(249,199,79,.3);
+  font-weight:900;font-size:clamp(1.05rem,1.45vw,1.35rem)
+}
+.question-text,.table-question-content{width:100%;text-align:center}
+.question-text{color:#f8fbff;font-size:clamp(1.28rem,1.92vw,1.9rem);line-height:1.38;font-weight:600}
+.question-text .math-seq{margin-top:1.5%;font-size:clamp(2rem,3.35vw,3.25rem);padding:18px 34px}
+.table-question-text{color:#f8fbff;font-size:clamp(1.08rem,1.42vw,1.38rem);line-height:1.35;font-weight:650;margin-bottom:3.5%}
+.choices-panel,.table-choices-panel{padding:5%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.choices-panel h3,.table-choices-panel h3{font-size:clamp(.88rem,1.15vw,1.08rem);color:#d8ecff;text-align:center;font-weight:800;margin-bottom:7%}
+.choices-list{width:100%;display:flex;flex-direction:column;align-items:center;gap:11px}
+.choice-btn{
+  width:88%;min-height:clamp(41px,4.4vw,56px);border-radius:16px;background:rgba(255,255,255,.13);
+  color:white;font-size:clamp(.95rem,1.2vw,1.15rem);text-align:center;border:1px solid rgba(255,255,255,.16);
+  display:flex;align-items:center;justify-content:center;padding:3% 4%
+}
+.choice-btn:hover{background:rgba(255,255,255,.2)}.choice-btn.correct{background:rgba(34,197,94,.86)}.choice-btn.wrong{background:rgba(239,68,68,.84)}
+.math-choice{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.12em;font-weight:650}
+.feedback{height:7%;margin-top:.9%;color:#ffe082;font-size:clamp(1rem,1.4vw,1.3rem);font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
+.question-buttons,.table-question-buttons{
+  position:absolute;bottom:7.2%;left:6%;right:6%;display:flex;justify-content:center;flex-wrap:wrap;gap:8px;z-index:2
+}
+.q-btn,.table-q-btn{
+  width:clamp(32px,3vw,44px);height:clamp(32px,3vw,44px);border-radius:50%;
+  background:rgba(255,255,255,.13);color:white;border:1px solid rgba(255,255,255,.18);font-size:clamp(.75rem,1vw,.95rem)
+}
+.q-btn.active-q,.table-q-btn.active-q{background:var(--gold);color:#08213f}
+.q-btn.answered,.table-q-btn.answered{border-color:rgba(34,197,94,.95);box-shadow:0 0 0 2px rgba(34,197,94,.22)}
+.result-card{
+  width:76%;min-height:58%;border-radius:34px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 24px 60px rgba(0,0,0,.36);padding:5%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2
+}
+.result-card h2{font-size:clamp(2.2rem,4.2vw,4rem);margin-bottom:2%}
+.score-circle{
+  width:clamp(150px,16vw,220px);height:clamp(150px,16vw,220px);border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#08213f;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(2.1rem,4vw,3.8rem);font-weight:900;margin:2.5% 0;box-shadow:0 16px 35px rgba(248,150,30,.35)
+}
+.result-message{font-size:clamp(1.05rem,1.55vw,1.45rem);color:#d8ecff;line-height:1.45;margin-bottom:3.5%}
+.result-actions{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.placeholder-card{
+  width:78%;min-height:50%;border-radius:32px;background:rgba(255,255,255,.095);border:1px solid var(--border);
+  box-shadow:0 24px 56px rgba(0,0,0,.34);padding:5%;text-align:center;z-index:2
+}
+.placeholder-card h2{font-size:clamp(2.2rem,4vw,3.8rem);margin-bottom:2%}
+.placeholder-card p{color:#d9efff;font-size:clamp(1rem,1.45vw,1.32rem);line-height:1.5;margin-bottom:4%}
+
+.shape-showcase{
+  width:100%;min-height:74%;border-radius:28px;background:rgba(2,6,23,.36);
+  border:1px solid rgba(56,217,255,.2);display:flex;flex-direction:column;justify-content:center;
+  padding:5.5%;text-align:center
+}
+.shape-level-row{
+  display:flex;justify-content:center;align-items:flex-end;gap:16px;flex-wrap:nowrap;margin-top:4%;
+}
+.shape-level-card{
+  flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:20px;padding:12px 10px 14px 10px;
+}
+.level-label{
+  color:#d8ecff;font-size:clamp(.75rem,1vw,.92rem);font-weight:800;letter-spacing:.5px;margin-bottom:8px;
+}
+.shape-board{
+  display:grid;gap:4px;justify-content:center;align-content:center;margin:0 auto;
+  min-height:92px;
+}
+.shape-cell{
+  width:14px;height:14px;opacity:0;
+}
+.shape-cell.active.square{
+  opacity:1;background:#f9c74f;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset;
+}
+.shape-cell.active.dot{
+  opacity:1;background:#9beeff;border-radius:50%;
+}
+.shape-prompt{
+  color:#ffe082;font-size:clamp(1rem,1.3vw,1.15rem);font-weight:800;margin-top:5%;
+}
+.shape-question-panel,.shape-choices-panel{
+  border-radius:30px;background:rgba(255,255,255,.095);border:1px solid var(--border);box-shadow:0 20px 48px rgba(0,0,0,.30)
+}
+.shape-question-panel{
+  padding:7.5% 4.5% 5%;position:relative;display:flex;align-items:center;justify-content:center
+}
+.shape-problem-layout{
+  width:100%;height:63%;display:grid;grid-template-columns:1.45fr .72fr;gap:2.2%;z-index:2
+}
+.shape-question-content{width:100%;text-align:center}
+.shape-question-text{
+  color:#f8fbff;font-size:clamp(1.06rem,1.4vw,1.34rem);line-height:1.35;font-weight:650;margin-bottom:2.8%;
+}
+.shape-choices-panel{
+  padding:5%;display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.shape-choices-panel h3{
+  font-size:clamp(.88rem,1.15vw,1.08rem);color:#d8ecff;text-align:center;font-weight:800;margin-bottom:7%
+}
+.shape-question-buttons{
+  position:absolute;bottom:7.2%;left:6%;right:6%;display:flex;justify-content:center;flex-wrap:wrap;gap:8px;z-index:2
+}
+.shape-q-btn{
+  width:clamp(32px,3vw,44px);height:clamp(32px,3vw,44px);border-radius:50%;
+  background:rgba(255,255,255,.13);color:white;border:1px solid rgba(255,255,255,.18);font-size:clamp(.75rem,1vw,.95rem)
+}
+.shape-q-btn.active-q{background:var(--gold);color:#08213f}
+.shape-q-btn.answered{border-color:rgba(34,197,94,.95);box-shadow:0 0 0 2px rgba(34,197,94,.22)}
+
+
+/* Decimal Points Practice Test */
+.decimal-practice-btn{
+  margin-top:2.2%;
+  padding:10px 34px;
+  border-radius:999px;
+  background:rgba(249,199,79,.16);
+  color:#ffe082;
+  border:1px solid rgba(249,199,79,.42);
+  font-size:clamp(.76rem,1vw,.95rem);
+  letter-spacing:1px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.decimal-page-card{
+  width:88%;
+  height:74%;
+  border-radius:34px;
+  background:rgba(255,255,255,.095);
+  border:1px solid var(--border);
+  box-shadow:0 24px 58px rgba(0,0,0,.34);
+  padding:3.2% 4%;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:2.6%;
+  z-index:2;
+}
+.decimal-header{
+  text-align:center;
+}
+.decimal-header h2{
+  font-size:clamp(2rem,3.6vw,3.5rem);
+  margin-top:.8%;
+}
+.student-select-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2.5%;
+}
+.select-card{
+  background:rgba(2,6,23,.28);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:20px;
+  padding:16px;
+}
+.select-card label{
+  display:block;
+  color:#9beeff;
+  font-size:clamp(.8rem,1vw,.95rem);
+  font-weight:800;
+  letter-spacing:1px;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.select-card select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.12);
+  color:white;
+  font-size:clamp(.9rem,1.2vw,1.08rem);
+  font-weight:700;
+  outline:none;
+}
+.select-card option{
+  color:#071a33;
+}
+.practice-table-wrap{
+  background:rgba(2,6,23,.25);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:22px;
+  overflow:hidden;
+}
+.practice-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.practice-table th{
+  background:rgba(56,217,255,.16);
+  color:#9beeff;
+  text-align:left;
+  padding:14px 18px;
+  font-size:clamp(.9rem,1.15vw,1.05rem);
+  letter-spacing:.5px;
+}
+.practice-table td{
+  padding:12px 18px;
+  border-top:1px solid rgba(255,255,255,.1);
+  color:#e8f6ff;
+  font-size:clamp(.9rem,1.1vw,1rem);
+  font-weight:700;
+}
+.practice-table button{
+  padding:9px 24px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#08213f;
+  font-size:clamp(.78rem,1vw,.9rem);
+}
+.status-complete{
+  color:#22c55e;
+  font-weight:900;
+}
+.status-incomplete{
+  color:#ffe082;
+  font-weight:900;
+}
+.decimal-actions{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+}
+.decimal-test-layout{
+  width:100%;
+  height:63%;
+  display:grid;
+  grid-template-columns:1.45fr .72fr;
+  gap:2.2%;
+  z-index:2;
+}
+.decimal-question-panel,.decimal-choices-panel{
+  border-radius:30px;
+  background:rgba(255,255,255,.095);
+  border:1px solid var(--border);
+  box-shadow:0 20px 48px rgba(0,0,0,.30);
+}
+.decimal-question-panel{
+  padding:7.5% 4.5% 5%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.decimal-question-content{
+  width:100%;
+  text-align:center;
+}
+.decimal-question-text{
+  color:#f8fbff;
+  font-size:clamp(1.08rem,1.42vw,1.38rem);
+  line-height:1.35;
+  font-weight:650;
+  margin-bottom:3.5%;
+}
+.decimal-choices-panel{
+  padding:5%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.decimal-choices-panel h3{
+  font-size:clamp(.88rem,1.15vw,1.08rem);
+  color:#d8ecff;
+  text-align:center;
+  font-weight:800;
+  margin-bottom:7%;
+}
+.decimal-question-buttons{
+  position:absolute;
+  bottom:7.2%;
+  left:6%;
+  right:6%;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  z-index:2;
+}
+.decimal-q-btn{
+  width:clamp(30px,2.7vw,40px);
+  height:clamp(30px,2.7vw,40px);
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  color:white;
+  border:1px solid rgba(255,255,255,.18);
+  font-size:clamp(.72rem,.96vw,.9rem);
+}
+.decimal-q-btn.active-q{background:var(--gold);color:#08213f}
+.decimal-q-btn.answered{border-color:rgba(34,197,94,.95);box-shadow:0 0 0 2px rgba(34,197,94,.22)}
+.decimal-student-line{
+  color:#d9efff;
+  font-size:clamp(.85rem,1.1vw,1rem);
+  font-weight:700;
+}
+
+
+.practice-table-wrap{
+  min-height:245px;
+}
+.practice-table tbody tr{
+  cursor:pointer;
+  background:rgba(255,255,255,.055);
+}
+.practice-table tbody tr:hover{
+  background:rgba(255,255,255,.105);
+}
+.practice-table td:first-child{
+  width:38%;
+}
+.practice-test-open-btn{
+  width:100%;
+  text-align:left;
+  padding:10px 18px;
+  border-radius:14px;
+  background:rgba(249,199,79,.18);
+  color:#ffe082;
+  border:1px solid rgba(249,199,79,.35);
+  font-size:clamp(.9rem,1.12vw,1.05rem);
+}
+.practice-test-open-btn:hover{
+  background:rgba(249,199,79,.28);
+}
+
+
+/* Compact decimal-practice menu so all 5 tests fit in 16:9 */
+#decimalPracticeMenu {
+  padding: 2.2% 5%;
+}
+
+#decimalPracticeMenu .decimal-page-card {
+  width: 90%;
+  height: 84%;
+  padding: 2.1% 3.4%;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 1.5%;
+}
+
+#decimalPracticeMenu .decimal-header h2 {
+  font-size: clamp(1.9rem, 3vw, 3rem);
+  margin-top: 0.4%;
+  line-height: 1;
+}
+
+#decimalPracticeMenu .decimal-header .pill {
+  padding: 8px 22px;
+  font-size: clamp(.7rem,.9vw,.85rem);
+}
+
+#decimalPracticeMenu .decimal-student-line {
+  font-size: clamp(.78rem, 1vw, .92rem);
+  margin-top: .5%;
+}
+
+#decimalPracticeMenu .student-select-row {
+  gap: 2%;
+}
+
+#decimalPracticeMenu .select-card {
+  padding: 10px 14px;
+  border-radius: 18px;
+}
+
+#decimalPracticeMenu .select-card label {
+  font-size: clamp(.72rem,.9vw,.84rem);
+  margin-bottom: 5px;
+}
+
+#decimalPracticeMenu .select-card select {
+  padding: 9px 12px;
+  border-radius: 13px;
+  font-size: clamp(.82rem,1.05vw,.95rem);
+}
+
+#decimalPracticeMenu .practice-table-wrap {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+#decimalPracticeMenu .practice-table {
+  height: 100%;
+  table-layout: fixed;
+}
+
+#decimalPracticeMenu .practice-table th {
+  padding: 9px 14px;
+  font-size: clamp(.78rem, .95vw, .9rem);
+}
+
+#decimalPracticeMenu .practice-table td {
+  padding: 6px 14px;
+  font-size: clamp(.78rem, .95vw, .9rem);
+  line-height: 1.1;
+}
+
+#decimalPracticeMenu .practice-table tbody tr {
+  height: 18%;
+}
+
+#decimalPracticeMenu .practice-test-open-btn {
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-size: clamp(.78rem, .95vw, .9rem);
+  text-align: center;
+}
+
+#decimalPracticeMenu .decimal-actions {
+  padding-top: .4%;
+}
+
+#decimalPracticeMenu .blue-btn {
+  padding: 10px 28px;
+  font-size: clamp(.76rem, .95vw, .9rem);
+}
+
+#decimalPracticeMenu .copyright {
+  bottom: 1%;
+  font-size: clamp(.75rem, .95vw, .9rem);
+}
+
+
+#decimalProceedMessage{
+  font-size:clamp(1.05rem,1.45vw,1.35rem);
+  color:#ffe082;
+  font-weight:900;
+  margin-bottom:2.2%;
+}
+#decimalProceedBtn.hidden{
+  display:none;
+}
+
+
+/* Four-test version: fit cleanly in the decimal practice menu */
+#decimalPracticeMenu .practice-table tbody tr {
+  height: 22%;
+}
+
+
+.locked-test-btn{
+  width:100%;
+  text-align:center;
+  padding:7px 14px;
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.14);
+  font-size:clamp(.78rem,.95vw,.9rem);
+  cursor:not-allowed;
+}
+.status-locked{
+  color:rgba(255,255,255,.45);
+  font-weight:900;
+}
+.practice-table tbody tr.locked-row{
+  cursor:not-allowed;
+  background:rgba(255,255,255,.03);
+}
+.practice-table tbody tr.locked-row:hover{
+  background:rgba(255,255,255,.03);
+}
+
+</style>
+</head>
+
+<body>
+<div class="canvas">
+
+<section id="opening" class="slide active centered">
+  <div class="floating-math fm1">2, 4, 6, 8</div>
+  <div class="floating-math fm2">__ △ __ △</div>
+  <div class="floating-math fm3">x → y</div>
+  <div class="floating-math fm4">1, 4, 9, 16</div>
+  <div class="opening-card">
+    <div class="pill">Interactive Mathematics Guide</div>
+    <h1>PAT<span>TERNS</span></h1>
+    <p>Explore number patterns, shape patterns, and patterns in tables through mini-lessons and guided practice.</p>
+    <button class="gold-btn" onclick="showSlide('menu')">START GUIDE</button>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="menu" class="slide centered">
+  <div class="menu-header">
+    <div class="pill">Choose a Topic</div>
+    <h1>PATTERNS INTERACTIVE GUIDE</h1>
+    <p>Select a topic to begin learning and practicing.</p>
+  </div>
+  <div class="topic-grid">
+    <button class="topic-card" onclick="showSlide('numberLesson')">
+      <div class="topic-icon">2,4</div>
+      <h2>Number Pattern</h2>
+      <p>Find missing terms, determine rules, and extend increasing or decreasing sequences.</p>
+    </button>
+    <button class="topic-card" onclick="showSlide('shapePattern')">
+      <div class="topic-icon">◆●■</div>
+      <h2>Shape Pattern</h2>
+      <p>Recognize visual rules using shapes, positions, colors, and repeated structures.</p>
+    </button>
+    <button class="topic-card" onclick="showSlide('tablePattern')">
+      <div class="topic-icon">x→y</div>
+      <h2>Patterns in Tables</h2>
+      <p>Use input and output values to identify relationships and complete tables.</p>
+    </button>
+  </div>
+  <button class="decimal-practice-btn" onclick="openDecimalPractice()">PRACTICE TEST FOR DECIMAL POINTS</button>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="numberLesson" class="slide centered">
+  <div class="lesson-card">
+    <div class="lesson-left">
+      <div class="pill">Mini Lesson</div>
+      <h2>Number Patterns</h2>
+      <p>A number pattern is a sequence that follows a rule. The sequence can increase, decrease, multiply, divide, or follow a special pattern.</p>
+    </div>
+    <div class="math-showcase">
+      <div class="showcase-label">Example</div>
+      <div><span class="math-seq">6, 12, 18, 24, 30</span></div>
+      <div class="showcase-rule">Rule: Add 6 each time</div>
+    </div>
+    <div class="lesson-actions">
+      <button class="gold-btn" onclick="startNumberProblems()">START PROBLEMS</button>
+      <button class="blue-btn" onclick="showSlide('menu')">BACK TO TOPICS</button>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="numberProblems" class="slide">
+  <div class="problem-top">
+    <h2>Number Pattern Problems</h2>
+    <div class="top-actions"><button class="blue-btn" onclick="showSlide('numberLesson')">LESSON</button><button class="finish-btn" onclick="showResults()">FINISH</button></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="problem-layout">
+    <div class="question-panel"><div class="question-number" id="problemNumber">Question 1 of 20</div><div class="question-text" id="questionText"></div></div>
+    <div class="choices-panel"><h3>Choose the correct answer.</h3><div id="choices" class="choices-list"></div></div>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <div class="question-buttons" id="questionButtons"></div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="numberResults" class="slide centered">
+  <div class="result-card">
+    <h2>Number Pattern Results</h2>
+    <div class="score-circle" id="scoreCircle">0/20</div>
+    <div class="result-message" id="resultMessage"></div>
+    <div class="result-actions"><button class="gold-btn" onclick="tryAgainNumberProblems()">TRY AGAIN</button><button class="blue-btn" onclick="showSlide('menu')">BACK TO HOME</button></div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="tablePattern" class="slide centered">
+  <div class="lesson-card">
+    <div class="lesson-left">
+      <div class="pill">Mini Lesson</div>
+      <h2>Patterns in Tables</h2>
+      <p>A table helps us organize a pattern. The first row shows the input values, and the second row shows the output values. We compare the values to find the rule.</p>
+    </div>
+    <div class="table-showcase">
+      <div class="showcase-label">Example Table</div>
+      <table class="pattern-table">
+        <tr><td class="label-cell"><span class="math-choice">x</span></td><td><span class="math-choice">1</span></td><td><span class="math-choice">2</span></td><td><span class="math-choice">3</span></td><td><span class="math-choice">4</span></td><td><span class="math-choice">5</span></td></tr>
+        <tr><td class="label-cell"><span class="math-choice">y</span></td><td><span class="math-choice">3</span></td><td><span class="math-choice">6</span></td><td><span class="math-choice">9</span></td><td><span class="math-choice">12</span></td><td><span class="math-choice">15</span></td></tr>
+      </table>
+      <div class="table-rule">Rule: Multiply <span class="math-choice">x</span> by 3 to get <span class="math-choice">y</span></div>
+    </div>
+    <div class="lesson-actions">
+      <button class="gold-btn" onclick="startTableProblems()">START PROBLEMS</button>
+      <button class="blue-btn" onclick="showSlide('menu')">BACK TO TOPICS</button>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="tableProblems" class="slide">
+  <div class="problem-top">
+    <h2>Patterns in Tables Problems</h2>
+    <div class="top-actions"><button class="blue-btn" onclick="showSlide('tablePattern')">LESSON</button><button class="finish-btn" onclick="showTableResults()">FINISH</button></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="tableProgressFill"></div></div>
+  <div class="table-problem-layout">
+    <div class="table-question-panel">
+      <div class="question-number" id="tableProblemNumber">Question 1 of 15</div>
+      <div class="table-question-content"><div class="table-question-text" id="tableQuestionText"></div><div id="tableQuestionTable"></div></div>
+    </div>
+    <div class="table-choices-panel"><h3>Choose the correct answer.</h3><div id="tableChoices" class="choices-list"></div></div>
+  </div>
+  <div class="feedback" id="tableFeedback"></div>
+  <div class="table-question-buttons" id="tableQuestionButtons"></div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="tableResults" class="slide centered">
+  <div class="result-card">
+    <h2>Patterns in Tables Results</h2>
+    <div class="score-circle" id="tableScoreCircle">0/15</div>
+    <div class="result-message" id="tableResultMessage"></div>
+    <div class="result-actions"><button class="gold-btn" onclick="tryAgainTableProblems()">TRY AGAIN</button><button class="blue-btn" onclick="showSlide('menu')">BACK TO HOME</button></div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+
+<section id="shapePattern" class="slide centered">
+  <div class="lesson-card">
+    <div class="lesson-left">
+      <div class="pill">Mini Lesson</div>
+      <h2>Shape Patterns</h2>
+      <p>A shape pattern shows how a figure grows from one level to the next. Look carefully at Levels 1, 2, and 3, then decide how the pattern continues.</p>
+    </div>
+    <div class="shape-showcase">
+      <div class="showcase-label">Example Pattern</div>
+      <div id="shapeLessonExample" class="shape-level-row"></div>
+      <div class="shape-prompt">Notice how the figure grows at each level.</div>
+    </div>
+    <div class="lesson-actions">
+      <button class="gold-btn" onclick="startShapeProblems()">START PROBLEMS</button>
+      <button class="blue-btn" onclick="showSlide('menu')">BACK TO TOPICS</button>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="shapeProblems" class="slide">
+  <div class="problem-top">
+    <h2>Shape Pattern Problems</h2>
+    <div class="top-actions"><button class="blue-btn" onclick="showSlide('shapePattern')">LESSON</button><button class="finish-btn" onclick="showShapeResults()">FINISH</button></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="shapeProgressFill"></div></div>
+  <div class="shape-problem-layout">
+    <div class="shape-question-panel">
+      <div class="question-number" id="shapeProblemNumber">Question 1 of 15</div>
+      <div class="shape-question-content">
+        <div class="shape-question-text" id="shapeQuestionText"></div>
+        <div id="shapeQuestionFigures" class="shape-level-row"></div>
+      </div>
+    </div>
+    <div class="shape-choices-panel">
+      <h3>Choose the correct answer.</h3>
+      <div id="shapeChoices" class="choices-list"></div>
+    </div>
+  </div>
+  <div class="feedback" id="shapeFeedback"></div>
+  <div class="shape-question-buttons" id="shapeQuestionButtons"></div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="shapeResults" class="slide centered">
+  <div class="result-card">
+    <h2>Shape Pattern Results</h2>
+    <div class="score-circle" id="shapeScoreCircle">0/15</div>
+    <div class="result-message" id="shapeResultMessage"></div>
+    <div class="result-actions"><button class="gold-btn" onclick="tryAgainShapeProblems()">TRY AGAIN</button><button class="blue-btn" onclick="showSlide('menu')">BACK TO HOME</button></div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+
+<section id="decimalPracticeMenu" class="slide centered">
+  <div class="decimal-page-card">
+    <div class="decimal-header">
+      <div class="pill">Extra Decimal Points</div>
+      <h2>PRACTICE TESTS</h2>
+      <p class="decimal-student-line">Select your class and name before choosing a practice test. Each practice test has a fixed set of questions for all students.</p>
+    </div>
+
+    <div class="student-select-row">
+      <div class="select-card">
+        <label for="classSelect">Class</label>
+        <select id="classSelect" onchange="updateStudentNames(); updateDecimalPracticeTable();">
+          <option value="">Select Class</option>
+          <option value="6°A">6°A</option>
+          <option value="6°B">6°B</option>
+          <option value="6°C">6°C</option>
+        </select>
+      </div>
+      <div class="select-card">
+        <label for="studentSelect">Student Name</label>
+        <select id="studentSelect" onchange="updateDecimalPracticeTable();">
+          <option value="">Select Student</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="practice-table-wrap">
+      <table class="practice-table">
+        <thead>
+          <tr>
+            <th>Practice Test Number</th>
+            <th>Date Opened</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="decimalPracticeRows">
+          <tr onclick="startDecimalTest(1)">
+            <td><button class="practice-test-open-btn" onclick="event.stopPropagation(); startDecimalTest(1)">Practice Test 1</button></td>
+            <td>Not opened</td>
+            <td class="status-incomplete">Not Completed</td>
+          </tr>
+          <tr onclick="startDecimalTest(2)">
+            <td><button class="practice-test-open-btn" onclick="event.stopPropagation(); startDecimalTest(2)">Practice Test 2</button></td>
+            <td>Not opened</td>
+            <td class="status-incomplete">Not Completed</td>
+          </tr>
+          <tr onclick="startDecimalTest(3)">
+            <td><button class="practice-test-open-btn" onclick="event.stopPropagation(); startDecimalTest(3)">Practice Test 3</button></td>
+            <td>Not opened</td>
+            <td class="status-incomplete">Not Completed</td>
+          </tr>
+          <tr onclick="startDecimalTest(4)">
+            <td><button class="practice-test-open-btn" onclick="event.stopPropagation(); startDecimalTest(4)">Practice Test 4</button></td>
+            <td>Not opened</td>
+            <td class="status-incomplete">Not Completed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="decimal-actions">
+      <button class="blue-btn" onclick="showSlide('menu')">BACK TO TOPICS</button>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="decimalTestScreen" class="slide">
+  <div class="problem-top">
+    <div>
+      <h2 id="decimalTestTitle">Practice Test 1</h2>
+      <div class="decimal-student-line" id="decimalStudentLine"></div>
+    </div>
+    <div class="top-actions">
+      <button class="blue-btn" onclick="showSlide('decimalPracticeMenu')">TEST MENU</button>
+      <button class="finish-btn" onclick="showDecimalResults()">SUBMIT</button>
+    </div>
+  </div>
+
+  <div class="progress-wrap"><div class="progress-fill" id="decimalProgressFill"></div></div>
+
+  <div class="decimal-test-layout">
+    <div class="decimal-question-panel">
+      <div class="question-number" id="decimalQuestionNumber">Question 1 of 20</div>
+      <div class="decimal-question-content">
+        <div class="decimal-question-text" id="decimalQuestionText"></div>
+        <div id="decimalQuestionVisual"></div>
+      </div>
+    </div>
+
+    <div class="decimal-choices-panel">
+      <h3>Choose the correct answer.</h3>
+      <div id="decimalChoices" class="choices-list"></div>
+    </div>
+  </div>
+
+  <div class="feedback" id="decimalFeedback"></div>
+  <div class="decimal-question-buttons" id="decimalQuestionButtons"></div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+<section id="decimalResults" class="slide centered">
+  <div class="result-card">
+    <h2 id="decimalResultTitle">Practice Test Results</h2>
+    <div class="score-circle" id="decimalScoreCircle">0/20</div>
+    <div class="result-message" id="decimalResultMessage"></div>
+    <div class="result-message" id="decimalProceedMessage"></div>
+    <div class="result-actions" id="decimalResultActions">
+      <button class="gold-btn" id="decimalProceedBtn" onclick="proceedToNextDecimalTest()">PROCEED TO NEXT TEST</button>
+      <button class="blue-btn" onclick="showSlide('decimalPracticeMenu'); updateDecimalPracticeTable();">BACK TO TEST MENU</button>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Delta Matemática | Created by Luis Ramos Jr. All Rights Reserved.</div>
+</section>
+
+</div>
+
+<script>
+let numberProblems = [];
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffle(array) {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = randInt(0, i);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function uniqueChoices(correct, wrongs) {
+  const set = new Set([String(correct)]);
+  wrongs.forEach(w => {
+    if (String(w) !== String(correct)) set.add(String(w));
+  });
+  let guard = 1;
+  while (set.size < 4) {
+    set.add(String(Number(correct) + guard));
+    guard++;
+  }
+  return shuffle(Array.from(set)).slice(0, 4);
+}
+
+function makeNumberProblems() {
+  const problems = [];
+
+  function addMissingIncreasing() {
+    const step = randInt(2, 12);
+    const start = randInt(1, 18);
+    const terms = [0,1,2,3,4].map(i => start + i * step);
+    const missingIndex = randInt(3, 4); // not in first three terms
+    const answer = terms[missingIndex];
+    const shown = terms.map((v, i) => i === missingIndex ? "_____" : v).join(", ");
+    problems.push({
+      q: "Find the missing number in the increasing sequence:<br><br><span class='math-seq'>" + shown + "</span>",
+      choices: uniqueChoices(answer, [answer-step, answer+step, answer+2*step, answer-2*step]),
+      answer: String(answer)
+    });
+  }
+
+  function addMissingMiddleIncreasing() {
+    const step = randInt(3, 10);
+    const start = randInt(2, 20);
+    const terms = [0,1,2,3,4].map(i => start + i * step);
+    const missingIndex = 3;
+    const answer = terms[missingIndex];
+    const shown = terms.map((v, i) => i === missingIndex ? "_____" : v).join(", ");
+    problems.push({
+      q: "Find the missing number:<br><br><span class='math-seq'>" + shown + "</span>",
+      choices: uniqueChoices(answer, [answer-step, answer+step, answer+1, answer-1]),
+      answer: String(answer)
+    });
+  }
+
+  function addNextThreeIncreasing() {
+    const step = randInt(2, 9);
+    const start = randInt(1, 15);
+    const first = [0,1,2,3].map(i => start + i * step);
+    const next = [4,5,6].map(i => start + i * step);
+    const answer = next.join(", ");
+    const wrong1 = next.map(v => v + step).join(", ");
+    const wrong2 = next.map(v => v - 1).join(", ");
+    const wrong3 = next.map(v => v + 1).join(", ");
+    problems.push({
+      q: "Find the next three terms:<br><br><span class='math-seq'>" + first.join(", ") + ", _____, _____, _____</span>",
+      choices: shuffle([answer, wrong1, wrong2, wrong3]),
+      answer: answer
+    });
+  }
+
+  function addRuleIncreasing() {
+    const kind = randInt(1, 3);
+    let q, answer, choices;
+
+    if (kind === 1) {
+      const step = randInt(2, 12);
+      const start = randInt(1, 18);
+      const terms = [0,1,2,3,4].map(i => start + i * step);
+      answer = "Add " + step;
+      choices = shuffle([answer, "Add " + (step + 1), "Subtract " + step, "Multiply by " + step]);
+      q = "What is the rule of the sequence?<br><br><span class='math-seq'>" + terms.join(", ") + "</span>";
+    } else if (kind === 2) {
+      const mult = randInt(2, 4);
+      const start = randInt(1, 4);
+      const terms = [start];
+      for (let i = 1; i < 5; i++) terms.push(terms[i-1] * mult);
+      answer = "Multiply by " + mult;
+      choices = shuffle([answer, "Add " + mult, "Multiply by " + (mult + 1), "Subtract " + mult]);
+      q = "What is the rule of the sequence?<br><br><span class='math-seq'>" + terms.join(", ") + "</span>";
+    } else {
+      const step = randInt(4, 10);
+      const start = randInt(70, 130);
+      const terms = [0,1,2,3,4].map(i => start - i * step);
+      answer = "Subtract " + step;
+      choices = shuffle([answer, "Add " + step, "Subtract " + (step + 1), "Divide by " + step]);
+      q = "What is the rule of the decreasing sequence?<br><br><span class='math-seq'>" + terms.join(", ") + "</span>";
+    }
+
+    problems.push({ q, choices, answer });
+  }
+
+  function addDecreasingMissing() {
+    const step = randInt(4, 12);
+    const start = randInt(70, 140);
+    const terms = [0,1,2,3,4].map(i => start - i * step);
+    const missingIndex = randInt(3, 4);
+    const answer = terms[missingIndex];
+    const shown = terms.map((v, i) => i === missingIndex ? "_____" : v).join(", ");
+    problems.push({
+      q: "Find the missing number in the decreasing sequence:<br><br><span class='math-seq'>" + shown + "</span>",
+      choices: uniqueChoices(answer, [answer-step, answer+step, answer+1, answer-1]),
+      answer: String(answer)
+    });
+  }
+
+  function addWordPattern() {
+    const step = randInt(2, 8);
+    const start = randInt(2, 10);
+    const contexts = [
+      "A student saves " + step + " more stickers each day.",
+      "A row has " + step + " more chairs than the row before.",
+      "A child reads " + step + " more pages each day.",
+      "A basket gets " + step + " more apples each time."
+    ];
+    const context = contexts[randInt(0, contexts.length - 1)];
+    const terms = [0,1,2,3,4].map(i => start + i * step);
+    const answer = terms[4];
+    problems.push({
+      q: context + " The numbers are:<br><br><span class='math-seq'>" + terms.slice(0,4).join(", ") + ", _____</span><br><br>What is the next number?",
+      choices: uniqueChoices(answer, [answer-step, answer+step, answer+1, answer-1]),
+      answer: String(answer)
+    });
+  }
+
+  // 20 questions total. Exactly 5 are rule questions.
+  for (let i = 0; i < 5; i++) addRuleIncreasing();
+  for (let i = 0; i < 5; i++) addMissingIncreasing();
+  for (let i = 0; i < 3; i++) addMissingMiddleIncreasing();
+  for (let i = 0; i < 3; i++) addNextThreeIncreasing();
+  for (let i = 0; i < 2; i++) addDecreasingMissing();
+  for (let i = 0; i < 2; i++) addWordPattern();
+
+  numberProblems = shuffle(problems);
+}
+
+let tableProblems = [];
+
+function formatRule(a, b, type) {
+  if (type === "ax") return "y = " + a + "x";
+  if (type === "x+b") return "y = x + " + b;
+  return "y = " + a + "x + " + b;
+}
+
+function generateYValues(x, a, b, type) {
+  if (type === "ax") return x.map(v => a * v);
+  if (type === "x+b") return x.map(v => v + b);
+  return x.map(v => a * v + b);
+}
+
+function addContextDescriptionProblem(problems, context) {
+  const x = [1, 2, 3, 4, 5];
+  const y = generateYValues(x, context.a, context.b, context.type);
+  const target = context.target || randInt(6, 9);
+  let answer;
+
+  if (context.type === "ax") answer = context.a * target;
+  else if (context.type === "x+b") answer = target + context.b;
+  else answer = context.a * target + context.b;
+
+  problems.push({
+    kind: "context",
+    x: x,
+    y: y,
+    choices: uniqueChoices(answer, [answer - context.a, answer + context.a, answer + 1, answer - 1]),
+    answer: String(answer),
+    question:
+      "<strong>x</strong> = " + context.xDesc + "<br>" +
+      "<strong>y</strong> = " + context.yDesc + "<br><br>" +
+      context.question.replace("{target}", target)
+  });
+}
+
+function makeTableProblems() {
+  const problems = [];
+  const x = [1, 2, 3, 4, 5];
+
+  // 1. Missing value in the y-row: exactly 3 questions.
+  function addMissingTable(type, a, b) {
+    const y = generateYValues(x, a, b, type);
+    const missingIndex = randInt(2, 4);
+    const answer = y[missingIndex];
+    const shownY = y.slice();
+    shownY[missingIndex] = null;
+
+    problems.push({
+      kind: "missing",
+      x: x,
+      y: shownY,
+      choices: uniqueChoices(answer, [answer - 1, answer + 1, answer + a, answer - a]),
+      answer: String(answer),
+      question: "Complete the table. What is the missing value in the y-row?"
+    });
+  }
+
+  addMissingTable("ax", randInt(3, 8), 0);
+  addMissingTable("x+b", 1, randInt(4, 10));
+  addMissingTable("ax+b", randInt(2, 5), randInt(1, 6));
+
+  // 2. Six contextual x-y description problems.
+  const contextBank = shuffle([
+    {
+      xDesc: "number of kilograms of apples",
+      yDesc: "total cost in pesos",
+      type: "ax",
+      a: randInt(2, 7),
+      b: 0,
+      target: 6,
+      question: "Find the cost of buying {target} kg of apples."
+    },
+    {
+      xDesc: "number of bus rides",
+      yDesc: "total cost in pesos",
+      type: "ax",
+      a: randInt(4, 9),
+      b: 0,
+      target: 7,
+      question: "Find the cost of taking {target} bus rides."
+    },
+    {
+      xDesc: "number of notebooks",
+      yDesc: "total cost in pesos",
+      type: "ax",
+      a: randInt(3, 8),
+      b: 0,
+      target: 8,
+      question: "Find the cost of buying {target} notebooks."
+    },
+    {
+      xDesc: "number of kilometers walked",
+      yDesc: "total points earned",
+      type: "x+b",
+      a: 1,
+      b: randInt(4, 9),
+      target: 6,
+      question: "Find the total points earned after walking {target} kilometers."
+    },
+    {
+      xDesc: "number of songs downloaded",
+      yDesc: "total number of songs in the playlist",
+      type: "x+b",
+      a: 1,
+      b: randInt(5, 12),
+      target: 7,
+      question: "Find the total number of songs after downloading {target} more songs."
+    },
+    {
+      xDesc: "number of days after planting",
+      yDesc: "height of a plant in centimeters",
+      type: "ax+b",
+      a: randInt(2, 5),
+      b: randInt(3, 9),
+      target: 6,
+      question: "Find the height of the plant after {target} days."
+    },
+    {
+      xDesc: "number of hours a bike is rented",
+      yDesc: "total rental cost in pesos",
+      type: "ax+b",
+      a: randInt(3, 8),
+      b: randInt(5, 12),
+      target: 7,
+      question: "Find the total cost of renting the bike for {target} hours."
+    },
+    {
+      xDesc: "number of photo prints",
+      yDesc: "total cost in pesos",
+      type: "ax+b",
+      a: randInt(2, 6),
+      b: randInt(4, 10),
+      target: 9,
+      question: "Find the total cost of printing {target} photos."
+    }
+  ]);
+
+  for (let i = 0; i < 6; i++) {
+    addContextDescriptionProblem(problems, contextBank[i]);
+  }
+
+  // 3. One find-the-rule problem using y = ax, y = x + b, or y = ax + b.
+  const ruleType = shuffle(["ax", "x+b", "ax+b"])[0];
+  const ruleA = ruleType === "x+b" ? 1 : randInt(2, 6);
+  const ruleB = ruleType === "ax" ? 0 : randInt(3, 9);
+  const ruleY = generateYValues(x, ruleA, ruleB, ruleType);
+  const correctRule = formatRule(ruleA, ruleB, ruleType);
+  const ruleChoices = shuffle([
+    correctRule,
+    "y = " + (ruleA + 1) + "x",
+    "y = x + " + (ruleB + 1),
+    "y = " + ruleA + "x + " + (ruleB + 2)
+  ]);
+
+  problems.push({
+    kind: "rule",
+    x: x,
+    y: ruleY,
+    choices: ruleChoices,
+    answer: correctRule,
+    question: "Which rule describes the table?"
+  });
+
+  // 4. Five simple word problems.
+  // The table shows x = 1 to 5, but the question asks for x = 6 to 9.
+  const wordBank = shuffle([
+    {
+      rate: randInt(3, 8),
+      target: randInt(6, 9),
+      question: "One notebook costs {rate} pesos. How much do {target} notebooks cost?"
+    },
+    {
+      rate: randInt(4, 9),
+      target: randInt(6, 9),
+      question: "Each box has {rate} pencils. How many pencils are in {target} boxes?"
+    },
+    {
+      rate: randInt(2, 7),
+      target: randInt(6, 9),
+      question: "Each student gets {rate} stickers. How many stickers are needed for {target} students?"
+    },
+    {
+      rate: randInt(5, 10),
+      target: randInt(6, 9),
+      question: "One ticket costs {rate} pesos. How much do {target} tickets cost?"
+    },
+    {
+      rate: randInt(3, 9),
+      target: randInt(6, 9),
+      question: "Each pack has {rate} markers. How many markers are in {target} packs?"
+    },
+    {
+      rate: randInt(2, 8),
+      target: randInt(6, 9),
+      question: "Each bag has {rate} candies. How many candies are in {target} bags?"
+    },
+    {
+      rate: randInt(3, 7),
+      target: randInt(6, 9),
+      question: "Each table has {rate} chairs. How many chairs are around {target} tables?"
+    }
+  ]);
+
+  for (let i = 0; i < 5; i++) {
+    const w = wordBank[i];
+    const y = x.map(v => w.rate * v);
+    const answer = w.rate * w.target;
+    problems.push({
+      kind: "word",
+      x: x,
+      y: y,
+      choices: uniqueChoices(answer, [answer - w.rate, answer + w.rate, answer + 1, answer - 1]),
+      answer: String(answer),
+      question: w.question.replace("{rate}", w.rate).replace("{target}", w.target)
+    });
+  }
+
+  tableProblems = shuffle(problems);
+}
+
+let currentProblem=0,answered=Array(20).fill(false),selectedAnswers=Array(20).fill(null),score=0;
+let currentTableProblem=0,tableAnswered=Array(15).fill(false),tableSelectedAnswers=Array(15).fill(null),tableScore=0;
+
+function showSlide(id){document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active")}
+function renderChoices(containerId,choices,answer,selected,answeredFlag,checkFn){
+ const box=document.getElementById(containerId);box.innerHTML="";
+ choices.forEach(choice=>{
+  const btn=document.createElement("button");btn.className="choice-btn";
+  btn.innerHTML="<span class='math-choice'>"+choice+"</span>";
+  btn.onclick=()=>checkFn(btn,choice);
+  if(answeredFlag){btn.disabled=true;if(choice===answer)btn.classList.add("correct");if(choice===selected&&choice!==answer)btn.classList.add("wrong")}
+  box.appendChild(btn);
+ });
+}
+
+function startNumberProblems(){makeNumberProblems();currentProblem=0;answered=Array(20).fill(false);selectedAnswers=Array(20).fill(null);score=0;renderQuestionButtons();renderNumberProblem();showSlide("numberProblems")}
+function renderNumberProblem(){
+ const p=numberProblems[currentProblem];
+ document.getElementById("problemNumber").innerHTML="Question "+(currentProblem+1)+" of 20";
+ document.getElementById("questionText").innerHTML=p.q;document.getElementById("feedback").innerHTML="";
+ renderChoices("choices",p.choices,p.answer,selectedAnswers[currentProblem],answered[currentProblem],checkAnswer);
+ if(answered[currentProblem])document.getElementById("feedback").innerHTML=selectedAnswers[currentProblem]===p.answer?"Correct!":"The correct answer is "+p.answer+".";
+ updateQuestionButtons();updateProgress();
+}
+function checkAnswer(button,selected){
+ if(answered[currentProblem])return;const p=numberProblems[currentProblem];selectedAnswers[currentProblem]=selected;answered[currentProblem]=true;
+ document.querySelectorAll("#choices .choice-btn").forEach(btn=>{btn.disabled=true;if(btn.textContent===p.answer)btn.classList.add("correct")});
+ if(selected===p.answer){score++;document.getElementById("feedback").innerHTML="Correct!"}else{button.classList.add("wrong");document.getElementById("feedback").innerHTML="The correct answer is "+p.answer+"."}
+ updateQuestionButtons();updateProgress();if(answered.every(Boolean))setTimeout(showResults,900)
+}
+function renderQuestionButtons(){const c=document.getElementById("questionButtons");c.innerHTML="";for(let i=0;i<numberProblems.length;i++){const b=document.createElement("button");b.className="q-btn";b.innerHTML=i+1;b.onclick=()=>{currentProblem=i;renderNumberProblem()};c.appendChild(b)}}
+function updateQuestionButtons(){document.querySelectorAll(".q-btn").forEach((b,i)=>{b.classList.remove("active-q","answered");if(i===currentProblem)b.classList.add("active-q");if(answered[i])b.classList.add("answered")})}
+function updateProgress(){document.getElementById("progressFill").style.width=(answered.filter(Boolean).length/numberProblems.length*100)+"%"}
+function showResults(){
+ score=selectedAnswers.filter((a,i)=>a===numberProblems[i].answer).length;document.getElementById("scoreCircle").innerHTML=score+"/20";
+ const percent=Math.round(score/20*100);let msg=percent>=90?"Excellent work! You showed strong understanding of number patterns.":percent>=75?"Great job! Review the missed questions and try again.":percent>=60?"Good effort! Keep practicing missing terms, rules, and next terms.":"Keep going! Check whether the sequence is increasing or decreasing, then look for the rule.";
+ document.getElementById("resultMessage").innerHTML="Your percentage is <strong>"+percent+"%</strong>.<br>"+msg;showSlide("numberResults")
+}
+function tryAgainNumberProblems(){startNumberProblems()}
+
+function makeTableHTML(p){
+ let top="<tr><td class='label-cell'><span class='math-choice'>x</span></td>";p.x.forEach(v=>top+="<td><span class='math-choice'>"+v+"</span></td>");top+="</tr>";
+ let bottom="<tr><td class='label-cell'><span class='math-choice'>y</span></td>";p.y.forEach(v=>{bottom+=v===null?"<td class='missing-cell'>_____</td>":"<td><span class='math-choice'>"+v+"</span></td>"});bottom+="</tr>";
+ return "<table class='problem-table'>"+top+bottom+"</table>"
+}
+function startTableProblems(){makeTableProblems();currentTableProblem=0;tableAnswered=Array(15).fill(false);tableSelectedAnswers=Array(15).fill(null);tableScore=0;renderTableQuestionButtons();renderTableProblem();showSlide("tableProblems")}
+function renderTableProblem(){
+ const p=tableProblems[currentTableProblem];
+ document.getElementById("tableProblemNumber").innerHTML="Question "+(currentTableProblem+1)+" of 15";
+ document.getElementById("tableQuestionText").innerHTML=p.question;
+ document.getElementById("tableQuestionTable").innerHTML=makeTableHTML(p);
+ document.getElementById("tableFeedback").innerHTML="";
+ renderChoices("tableChoices",p.choices,p.answer,tableSelectedAnswers[currentTableProblem],tableAnswered[currentTableProblem],checkTableAnswer);
+ if(tableAnswered[currentTableProblem])document.getElementById("tableFeedback").innerHTML=tableSelectedAnswers[currentTableProblem]===p.answer?"Correct!":"The correct answer is "+p.answer+".";
+ updateTableQuestionButtons();updateTableProgress();
+}
+function checkTableAnswer(button,selected){
+ if(tableAnswered[currentTableProblem])return;const p=tableProblems[currentTableProblem];tableSelectedAnswers[currentTableProblem]=selected;tableAnswered[currentTableProblem]=true;
+ document.querySelectorAll("#tableChoices .choice-btn").forEach(btn=>{btn.disabled=true;if(btn.textContent===p.answer)btn.classList.add("correct")});
+ if(selected===p.answer){tableScore++;document.getElementById("tableFeedback").innerHTML="Correct!"}else{button.classList.add("wrong");document.getElementById("tableFeedback").innerHTML="The correct answer is "+p.answer+"."}
+ updateTableQuestionButtons();updateTableProgress();if(tableAnswered.every(Boolean))setTimeout(showTableResults,900)
+}
+function renderTableQuestionButtons(){const c=document.getElementById("tableQuestionButtons");c.innerHTML="";for(let i=0;i<tableProblems.length;i++){const b=document.createElement("button");b.className="table-q-btn";b.innerHTML=i+1;b.onclick=()=>{currentTableProblem=i;renderTableProblem()};c.appendChild(b)}}
+function updateTableQuestionButtons(){document.querySelectorAll(".table-q-btn").forEach((b,i)=>{b.classList.remove("active-q","answered");if(i===currentTableProblem)b.classList.add("active-q");if(tableAnswered[i])b.classList.add("answered")})}
+function updateTableProgress(){document.getElementById("tableProgressFill").style.width=(tableAnswered.filter(Boolean).length/tableProblems.length*100)+"%"}
+function showTableResults(){
+ tableScore=tableSelectedAnswers.filter((a,i)=>a===tableProblems[i].answer).length;document.getElementById("tableScoreCircle").innerHTML=tableScore+"/15";
+ const percent=Math.round(tableScore/15*100);let msg=percent>=90?"Excellent work! You can identify missing values and rules in tables very well.":percent>=75?"Great job! You understand how x-values and y-values are connected.":percent>=60?"Good effort! Keep practicing how to compare x-values and y-values.":"Keep going! Look at how the y-values change when x increases.";
+ document.getElementById("tableResultMessage").innerHTML="Your percentage is <strong>"+percent+"%</strong>.<br>"+msg;showSlide("tableResults")
+}
+function tryAgainTableProblems(){startTableProblems()}
+
+let shapeProblems = [];
+
+function coordsLShape(level){
+  const n = level + 1;
+  const pts = [];
+  for(let y=0;y<n;y++) pts.push([0,y]);
+  for(let x=1;x<n;x++) pts.push([x,n-1]);
+  return pts;
+}
+function coordsSquare(level){
+  const n = level;
+  const pts = [];
+  for(let y=0;y<n;y++) for(let x=0;x<n;x++) pts.push([x,y]);
+  return pts;
+}
+function coordsTriangle(level){
+  const n = level;
+  const pts = [];
+  for(let y=0;y<n;y++) for(let x=0;x<=y;x++) pts.push([x,y]);
+  return pts;
+}
+function coordsRectangle(level){
+  const rows = level;
+  const cols = level + 1;
+  const pts = [];
+  for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) pts.push([x,y]);
+  return pts;
+}
+function coordsFrame(level){
+  const n = level + 1;
+  const pts = [];
+  for(let y=0;y<n;y++){
+    for(let x=0;x<n;x++){
+      if(x===0 || y===0 || x===n-1 || y===n-1) pts.push([x,y]);
+    }
+  }
+  return pts;
+}
+function coordsStair(level){
+  const n = level + 1;
+  const pts = [];
+  for(let y=0;y<n;y++) for(let x=0;x<=y;x++) pts.push([x,n-1-y]);
+  return pts;
+}
+function coordsCross(level){
+  const arm = level;
+  const size = 2*arm + 1;
+  const c = arm;
+  const pts = [];
+  for(let i=0;i<size;i++){ pts.push([c,i]); pts.push([i,c]); }
+  return pts.filter((p,idx,a)=>a.findIndex(q=>q[0]===p[0]&&q[1]===p[1])===idx);
+}
+function coordsTShape(level){
+  const h = level + 1;
+  const top = 2*level + 1;
+  const pts = [];
+  for(let x=0;x<top;x++) pts.push([x,0]);
+  const mid = Math.floor(top/2);
+  for(let y=1;y<h;y++) pts.push([mid,y]);
+  return pts;
+}
+function coordsUShape(level){
+  const h = level + 2;
+  const w = level + 2;
+  const pts = [];
+  for(let y=0;y<h;y++){ pts.push([0,y]); pts.push([w-1,y]);}
+  for(let x=1;x<w-1;x++) pts.push([x,h-1]);
+  return pts.filter((p,idx,a)=>a.findIndex(q=>q[0]===p[0]&&q[1]===p[1])===idx);
+}
+function coordsPlusCorners(level){
+  const pts = [[1,0],[0,1],[1,1],[2,1],[1,2]];
+  for(let k=2;k<=level;k++){
+    pts.push([0,k],[2,k],[1,k+1]);
+  }
+  return pts;
+}
+function countCoords(fn, level){ return fn(level).length; }
+
+function renderShapeBoard(coords, styleType){
+  let maxX = 0, maxY = 0;
+  coords.forEach(([x,y]) => { if(x>maxX) maxX=x; if(y>maxY) maxY=y; });
+  const cols = maxX + 1, rows = maxY + 1;
+  const active = new Set(coords.map(([x,y]) => x + "," + y));
+  let html = "<div class='shape-board' style='grid-template-columns:repeat(" + cols + ",14px);grid-template-rows:repeat(" + rows + ",14px)'>";
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<cols;x++){
+      const on = active.has(x + "," + y);
+      html += "<div class='shape-cell" + (on ? " active " + styleType : "") + "'></div>";
+    }
+  }
+  html += "</div>";
+  return html;
+}
+
+function renderShapeLevels(problem){
+  let html = "";
+  for(let level=1; level<=3; level++){
+    html += "<div class='shape-level-card'><div class='level-label'>LEVEL " + level + "</div>" +
+            renderShapeBoard(problem.coordFn(level), problem.styleType) + "</div>";
+  }
+  return html;
+}
+
+function shapeChoiceNumbers(correct){
+  let wrongs = [
+    correct - 1,
+    correct + 1,
+    correct + 2,
+    correct - 2,
+    correct + 3,
+    Math.max(1, correct - 3)
+  ].filter(v => v > 0);
+  return uniqueChoices(correct, wrongs);
+}
+
+function makeRuleChoices(ruleText){
+  const commonRules = [
+    "Multiply the level by itself",
+    "Add 2 each level",
+    "Add 3 each level",
+    "Add 4 each level",
+    "Add the next counting number",
+    "Use n(n + 1)",
+    "Use n² + 2n",
+    "Double the level and add 1"
+  ];
+  let choices = [ruleText];
+  commonRules.forEach(r => { if(r !== ruleText && choices.length < 4) choices.push(r); });
+  return shuffle(choices);
+}
+
+function makeShapeProblems(){
+  const patternPool = [
+    {
+      name:"L-shape squares",
+      styleType:"square",
+      coordFn:coordsLShape,
+      unit:"squares",
+      rule:"Double the level and add 1"
+    },
+    {
+      name:"L-shape dots",
+      styleType:"dot",
+      coordFn:coordsLShape,
+      unit:"dots",
+      rule:"Double the level and add 1"
+    },
+    {
+      name:"Square numbers",
+      styleType:"square",
+      coordFn:coordsSquare,
+      unit:"squares",
+      rule:"Multiply the level by itself"
+    },
+    {
+      name:"Triangular numbers",
+      styleType:"dot",
+      coordFn:coordsTriangle,
+      unit:"dots",
+      rule:"Add the next counting number"
+    },
+    {
+      name:"Growing rectangles",
+      styleType:"square",
+      coordFn:coordsRectangle,
+      unit:"squares",
+      rule:"Use n(n + 1)"
+    },
+    {
+      name:"Hollow square frames",
+      styleType:"dot",
+      coordFn:coordsFrame,
+      unit:"dots",
+      rule:"Add 4 each level"
+    },
+    {
+      name:"Growing stair pattern",
+      styleType:"square",
+      coordFn:coordsStair,
+      unit:"squares",
+      rule:"Add the next counting number"
+    },
+    {
+      name:"Growing cross pattern",
+      styleType:"dot",
+      coordFn:coordsCross,
+      unit:"dots",
+      rule:"Add 4 each level"
+    },
+    {
+      name:"T-shape pattern",
+      styleType:"square",
+      coordFn:coordsTShape,
+      unit:"squares",
+      rule:"Add 3 each level"
+    },
+    {
+      name:"U-shape pattern",
+      styleType:"dot",
+      coordFn:coordsUShape,
+      unit:"dots",
+      rule:"Add 3 each level"
+    }
+  ];
+
+  const problems = [];
+
+  // 10 level-count questions. The target level is randomized from 4 to 9.
+  const shuffledPool = shuffle(patternPool);
+  for(let i=0; i<10; i++){
+    const p = shuffledPool[i % shuffledPool.length];
+    const targetLevel = randInt(4, 9);
+    const answer = countCoords(p.coordFn, targetLevel);
+    problems.push({
+      kind:"count",
+      question:"Look at Levels 1, 2, and 3. How many " + p.unit + " will Level " + targetLevel + " have?",
+      styleType:p.styleType,
+      coordFn:p.coordFn,
+      choices:shapeChoiceNumbers(answer),
+      answer:String(answer)
+    });
+  }
+
+  // 5 rule questions.
+  const rulePool = shuffle(patternPool).slice(0,5);
+  rulePool.forEach(p => {
+    problems.push({
+      kind:"rule",
+      question:"Look at Levels 1, 2, and 3. What is the rule for getting the number of " + p.unit + " in the next level?",
+      styleType:p.styleType,
+      coordFn:p.coordFn,
+      choices:makeRuleChoices(p.rule),
+      answer:p.rule
+    });
+  });
+
+  shapeProblems = shuffle(problems);
+}
+
+let currentShapeProblem = 0, shapeAnswered = Array(15).fill(false), shapeSelectedAnswers = Array(15).fill(null), shapeScore = 0;
+
+function startShapeProblems(){
+  makeShapeProblems();
+  currentShapeProblem = 0;
+  shapeAnswered = Array(15).fill(false);
+  shapeSelectedAnswers = Array(15).fill(null);
+  shapeScore = 0;
+  renderShapeQuestionButtons();
+  renderShapeProblem();
+  showSlide("shapeProblems");
+}
+
+function renderShapeProblem(){
+  const p = shapeProblems[currentShapeProblem];
+  document.getElementById("shapeProblemNumber").innerHTML = "Question " + (currentShapeProblem + 1) + " of 15";
+  document.getElementById("shapeQuestionText").innerHTML = p.question;
+  document.getElementById("shapeQuestionFigures").innerHTML = renderShapeLevels(p);
+  document.getElementById("shapeFeedback").innerHTML = "";
+  renderChoices("shapeChoices", p.choices, p.answer, shapeSelectedAnswers[currentShapeProblem], shapeAnswered[currentShapeProblem], checkShapeAnswer);
+  if(shapeAnswered[currentShapeProblem]){
+    document.getElementById("shapeFeedback").innerHTML = shapeSelectedAnswers[currentShapeProblem] === p.answer ? "Correct!" : "The correct answer is " + p.answer + ".";
+  }
+  updateShapeQuestionButtons();
+  updateShapeProgress();
+}
+
+function checkShapeAnswer(button, selected){
+  if(shapeAnswered[currentShapeProblem]) return;
+  const p = shapeProblems[currentShapeProblem];
+  shapeSelectedAnswers[currentShapeProblem] = selected;
+  shapeAnswered[currentShapeProblem] = true;
+  document.querySelectorAll("#shapeChoices .choice-btn").forEach(btn => {
+    btn.disabled = true;
+    if(btn.textContent === p.answer) btn.classList.add("correct");
+  });
+  if(selected === p.answer){
+    shapeScore++;
+    document.getElementById("shapeFeedback").innerHTML = "Correct!";
+  } else {
+    button.classList.add("wrong");
+    document.getElementById("shapeFeedback").innerHTML = "The correct answer is " + p.answer + ".";
+  }
+  updateShapeQuestionButtons();
+  updateShapeProgress();
+  if(shapeAnswered.every(Boolean)) setTimeout(showShapeResults, 900);
+}
+
+function renderShapeQuestionButtons(){
+  const c = document.getElementById("shapeQuestionButtons");
+  c.innerHTML = "";
+  for(let i=0; i<shapeProblems.length; i++){
+    const b = document.createElement("button");
+    b.className = "shape-q-btn";
+    b.innerHTML = i + 1;
+    b.onclick = () => { currentShapeProblem = i; renderShapeProblem(); };
+    c.appendChild(b);
+  }
+}
+
+function updateShapeQuestionButtons(){
+  document.querySelectorAll(".shape-q-btn").forEach((b, i) => {
+    b.classList.remove("active-q","answered");
+    if(i === currentShapeProblem) b.classList.add("active-q");
+    if(shapeAnswered[i]) b.classList.add("answered");
+  });
+}
+function updateShapeProgress(){
+  document.getElementById("shapeProgressFill").style.width = (shapeAnswered.filter(Boolean).length / 15 * 100) + "%";
+}
+function showShapeResults(){
+  shapeScore = shapeSelectedAnswers.filter((a, i) => a === shapeProblems[i].answer).length;
+  document.getElementById("shapeScoreCircle").innerHTML = shapeScore + "/15";
+  const percent = Math.round(shapeScore / 15 * 100);
+  let msg = "";
+  if(percent >= 90) msg = "Excellent work! You can recognize how shape patterns grow from one level to the next.";
+  else if(percent >= 75) msg = "Great job! You understand many shape patterns and rules well.";
+  else if(percent >= 60) msg = "Good effort! Keep practicing how the figures grow and how the rule changes.";
+  else msg = "Keep going! Compare Levels 1, 2, and 3 carefully, then use the rule for the target level.";
+  document.getElementById("shapeResultMessage").innerHTML = "Your percentage is <strong>" + percent + "%</strong>.<br>" + msg;
+  showSlide("shapeResults");
+}
+function tryAgainShapeProblems(){ startShapeProblems(); }
+
+// Initialize lesson example
+document.addEventListener("DOMContentLoaded", function(){
+  const lessonProblem = {styleType:"square", coordFn:coordsLShape};
+  document.getElementById("shapeLessonExample").innerHTML = renderShapeLevels(lessonProblem);
+});
+
+
+const classStudents = {
+  "6°A": ["AGURTO","AVILES","AYALA","BADILLA","BELTRAMI","BELTRAN","BRAVO","GOUTIER","GUEVARRA","KORLAET","MONTANER","OCAMPO","ORTIZ","PASTEN","PINILLA","RANZETTA","RIVERA","RUIZ","SCHULTZ","VIDAL","ZADJELOVIC","ZUVIC"],
+  "6°B": ["ABUHADBA","ALVARADO","BACHILOGLU","BEVILACQUA","BRAVO","CABRERA","CAMPOS","CORTES","DELPIANO","DIAZ I.","DIAZ S.","ESCAURIAZA","ESPINOSA","FEBREGA","JAMETT","MANRIQUEZ","PIZARRO","RENCORET","ROMAN J.","ROMAN A.","SLAVIK","VALDERRAMA","VARGAS","VOLPI"],
+  "6°C": ["ARRENAS","BAYGORRIA","BRACAMONTE","CARREÑO","CHIA","DIAZ","DUARTE","GLASER","GONZALEZ","GROLLMUS","GUGGIANA","ILLANES","LOYOLA","MELLA","MONROY","MURILLO","OLIVAREZ","ORMAZABAL","PIZARRO","ROJAS","SAAVEDRA","ZAFIROPULOS A","ZAFIROPULOS E"]
+};
+
+let currentDecimalTestNumber = 1;
+let decimalTestSets = {};
+let decimalQuestions = [];
+let currentDecimalQuestion = 0;
+let decimalAnswered = Array(20).fill(false);
+let decimalSelectedAnswers = Array(20).fill(null);
+
+
+
+function seededRandomFactory(seed){
+  let value = seed % 2147483647;
+  if(value <= 0) value += 2147483646;
+  return function(){
+    value = value * 16807 % 2147483647;
+    return (value - 1) / 2147483646;
+  };
+}
+
+function withFixedSeed(seed, callback){
+  const originalRandom = Math.random;
+  Math.random = seededRandomFactory(seed);
+  try {
+    return callback();
+  } finally {
+    Math.random = originalRandom;
+  }
+}
+
+function createSingleDecimalTest(testNumber){
+  const fixedSeeds = {
+    1: 6101,
+    2: 6202,
+    3: 6303,
+    4: 6404
+  };
+
+  return withFixedSeed(fixedSeeds[testNumber] || 6101, function(){
+    return shuffle([
+      ...makeDecimalNumberQuestions(7),
+      ...makeDecimalShapeQuestions(3),
+      ...makeDecimalTableQuestions(10)
+    ]);
+  });
+}
+
+function generateAllDecimalPracticeTests(){
+  decimalTestSets = {};
+  for(let i = 1; i <= 4; i++){
+    decimalTestSets[i] = createSingleDecimalTest(i);
+  }
+}
+
+function openDecimalPractice(){
+  updateStudentNames();
+  updateDecimalPracticeTable();
+  showSlide("decimalPracticeMenu");
+  setTimeout(updateDecimalPracticeTable, 50);
+}
+
+function updateStudentNames(){
+  const classValue = document.getElementById("classSelect").value;
+  const studentSelect = document.getElementById("studentSelect");
+  studentSelect.innerHTML = "<option value=''>Select Student</option>";
+  if(!classValue || !classStudents[classValue]) return;
+  classStudents[classValue].forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    studentSelect.appendChild(option);
+  });
+}
+
+function getDecimalStatusKey(testNumber){
+  const classValue = document.getElementById("classSelect").value || "NO_CLASS";
+  const studentValue = document.getElementById("studentSelect").value || "NO_STUDENT";
+  return "patternsDecimalStatus_" + classValue + "_" + studentValue + "_T" + testNumber;
+}
+
+function getDecimalDateKey(testNumber){
+  const classValue = document.getElementById("classSelect").value || "NO_CLASS";
+  const studentValue = document.getElementById("studentSelect").value || "NO_STUDENT";
+  return "patternsDecimalDateOpened_" + classValue + "_" + studentValue + "_T" + testNumber;
+}
+
+function getTodayDateText(){
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  return yyyy + "-" + mm + "-" + dd;
+}
+
+function updateDecimalPracticeTable(){
+  const body = document.getElementById("decimalPracticeRows");
+  if(!body) return;
+
+  body.innerHTML = "";
+
+  const classValue = document.getElementById("classSelect").value;
+  const studentValue = document.getElementById("studentSelect").value;
+  const hasStudent = classValue && studentValue;
+
+  for(let i = 1; i <= 4; i++){
+    const completed = hasStudent && localStorage.getItem(getDecimalStatusKey(i)) === "completed";
+    const previousCompleted = i === 1 || (hasStudent && localStorage.getItem(getDecimalStatusKey(i - 1)) === "completed");
+    const isLocked = i > 1 && !previousCompleted;
+    const dateOpened = hasStudent ? (localStorage.getItem(getDecimalDateKey(i)) || "Not opened") : "Not opened";
+
+    const tr = document.createElement("tr");
+
+    if(isLocked){
+      tr.className = "locked-row";
+      tr.innerHTML =
+        "<td><button class='locked-test-btn' disabled>Practice Test " + i + " 🔒</button></td>" +
+        "<td>" + dateOpened + "</td>" +
+        "<td class='status-locked'>Locked</td>";
+    } else {
+      tr.onclick = function(){ startDecimalTest(i); };
+      tr.innerHTML =
+        "<td><button class='practice-test-open-btn' onclick='event.stopPropagation(); startDecimalTest(" + i + ")'>Practice Test " + i + "</button></td>" +
+        "<td>" + dateOpened + "</td>" +
+        "<td class='" + (completed ? "status-complete" : "status-incomplete") + "'>" + (completed ? "Completed" : "Not Completed") + "</td>";
+    }
+
+    body.appendChild(tr);
+  }
+}
+
+function requireStudentInfo(){
+  const classValue = document.getElementById("classSelect").value;
+  const studentValue = document.getElementById("studentSelect").value;
+  if(!classValue || !studentValue){
+    alert("Please select your class and student name first.");
+    return false;
+  }
+  return true;
+}
+
+function makeDecimalNumberQuestions(count){
+  makeNumberProblems();
+  return numberProblems.slice(0, count).map(p => ({
+    q: p.q,
+    visual: "",
+    choices: p.choices,
+    answer: p.answer
+  }));
+}
+
+function makeDecimalShapeQuestions(count){
+  makeShapeProblems();
+  return shapeProblems.slice(0, count).map(p => ({
+    q: p.question,
+    visual: "<div class='shape-level-row'>" + renderShapeLevels(p) + "</div>",
+    choices: p.choices,
+    answer: p.answer
+  }));
+}
+
+function makeDecimalTableQuestions(count){
+  makeTableProblems();
+  return tableProblems.slice(0, count).map(p => ({
+    q: p.question,
+    visual: makeTableHTML(p),
+    choices: p.choices,
+    answer: p.answer
+  }));
+}
+
+function startDecimalTest(testNumber){
+  if(!requireStudentInfo()) return;
+
+  if(testNumber > 1 && localStorage.getItem(getDecimalStatusKey(testNumber - 1)) !== "completed"){
+    alert("Please complete Practice Test " + (testNumber - 1) + " before opening Practice Test " + testNumber + ".");
+    updateDecimalPracticeTable();
+    return;
+  }
+
+  currentDecimalTestNumber = testNumber;
+
+  if(!localStorage.getItem(getDecimalDateKey(testNumber))) {
+    localStorage.setItem(getDecimalDateKey(testNumber), getTodayDateText());
+  }
+
+  if(!decimalTestSets[testNumber]) {
+    decimalTestSets[testNumber] = createSingleDecimalTest(testNumber);
+  }
+
+  decimalQuestions = decimalTestSets[testNumber].slice();
+
+  currentDecimalQuestion = 0;
+  decimalAnswered = Array(20).fill(false);
+  decimalSelectedAnswers = Array(20).fill(null);
+
+  document.getElementById("decimalTestTitle").innerHTML = "Practice Test " + testNumber;
+  document.getElementById("decimalStudentLine").innerHTML =
+    document.getElementById("classSelect").value + " | " + document.getElementById("studentSelect").value;
+
+  renderDecimalQuestionButtons();
+  renderDecimalQuestion();
+  showSlide("decimalTestScreen");
+}
+
+function renderDecimalQuestion(){
+  const p = decimalQuestions[currentDecimalQuestion];
+  document.getElementById("decimalQuestionNumber").innerHTML = "Question " + (currentDecimalQuestion + 1) + " of 20";
+  document.getElementById("decimalQuestionText").innerHTML = p.q;
+  document.getElementById("decimalQuestionVisual").innerHTML = p.visual || "";
+  document.getElementById("decimalFeedback").innerHTML = "";
+
+  renderChoices("decimalChoices", p.choices, p.answer, decimalSelectedAnswers[currentDecimalQuestion], decimalAnswered[currentDecimalQuestion], checkDecimalAnswer);
+
+  if(decimalAnswered[currentDecimalQuestion]){
+    document.getElementById("decimalFeedback").innerHTML =
+      decimalSelectedAnswers[currentDecimalQuestion] === p.answer ? "Correct!" : "The correct answer is " + p.answer + ".";
+  }
+
+  updateDecimalQuestionButtons();
+  updateDecimalProgress();
+}
+
+function checkDecimalAnswer(button, selected){
+  if(decimalAnswered[currentDecimalQuestion]) return;
+  const p = decimalQuestions[currentDecimalQuestion];
+  decimalSelectedAnswers[currentDecimalQuestion] = selected;
+  decimalAnswered[currentDecimalQuestion] = true;
+
+  document.querySelectorAll("#decimalChoices .choice-btn").forEach(btn => {
+    btn.disabled = true;
+    if(btn.textContent === p.answer) btn.classList.add("correct");
+  });
+
+  if(selected === p.answer){
+    document.getElementById("decimalFeedback").innerHTML = "Correct!";
+  } else {
+    button.classList.add("wrong");
+    document.getElementById("decimalFeedback").innerHTML = "The correct answer is " + p.answer + ".";
+  }
+
+  updateDecimalQuestionButtons();
+  updateDecimalProgress();
+
+  if(decimalAnswered.every(Boolean)) setTimeout(showDecimalResults, 900);
+}
+
+function renderDecimalQuestionButtons(){
+  const c = document.getElementById("decimalQuestionButtons");
+  c.innerHTML = "";
+  for(let i=0;i<20;i++){
+    const b = document.createElement("button");
+    b.className = "decimal-q-btn";
+    b.innerHTML = i + 1;
+    b.onclick = () => { currentDecimalQuestion = i; renderDecimalQuestion(); };
+    c.appendChild(b);
+  }
+}
+
+function updateDecimalQuestionButtons(){
+  document.querySelectorAll(".decimal-q-btn").forEach((b,i)=>{
+    b.classList.remove("active-q","answered");
+    if(i === currentDecimalQuestion) b.classList.add("active-q");
+    if(decimalAnswered[i]) b.classList.add("answered");
+  });
+}
+
+function updateDecimalProgress(){
+  document.getElementById("decimalProgressFill").style.width = (decimalAnswered.filter(Boolean).length / 20 * 100) + "%";
+}
+
+function showDecimalResults(){
+  let score = 0;
+  for(let i=0;i<decimalQuestions.length;i++){
+    if(decimalSelectedAnswers[i] === decimalQuestions[i].answer) score++;
+  }
+
+  localStorage.setItem(getDecimalStatusKey(currentDecimalTestNumber), "completed");
+
+  const percent = Math.round(score / 20 * 100);
+  document.getElementById("decimalResultTitle").innerHTML = "Practice Test " + currentDecimalTestNumber + " Results";
+  document.getElementById("decimalScoreCircle").innerHTML = score + "/20";
+  document.getElementById("decimalResultMessage").innerHTML =
+    document.getElementById("classSelect").value + " | " + document.getElementById("studentSelect").value +
+    "<br>Your percentage is <strong>" + percent + "%</strong>.<br>" +
+    (percent >= 90 ? "Excellent work!" : percent >= 75 ? "Great job!" : percent >= 60 ? "Good effort. Keep practicing." : "Keep going. Review your mistakes.");
+
+  const proceedMessage = document.getElementById("decimalProceedMessage");
+  const proceedBtn = document.getElementById("decimalProceedBtn");
+
+  if(currentDecimalTestNumber < 4){
+    proceedMessage.innerHTML = "Proceed to Practice Test " + (currentDecimalTestNumber + 1) + "?";
+    proceedBtn.innerHTML = "PROCEED TO PRACTICE TEST " + (currentDecimalTestNumber + 1);
+    proceedBtn.classList.remove("hidden");
+  } else {
+    proceedMessage.innerHTML = "You have completed all 4 practice tests.";
+    proceedBtn.classList.add("hidden");
+  }
+
+  showSlide("decimalResults");
+}
+
+function proceedToNextDecimalTest(){
+  if(currentDecimalTestNumber < 4){
+    startDecimalTest(currentDecimalTestNumber + 1);
+  } else {
+    showSlide("decimalPracticeMenu");
+    updateDecimalPracticeTable();
+  }
+}
+
+</script>
+</body>
+</html>
