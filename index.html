@@ -939,16 +939,31 @@ function shuffle(array) {
 }
 
 function uniqueChoices(correct, wrongs) {
-  const set = new Set([String(correct)]);
+  const correctText = String(correct);
+  const wrongSet = new Set();
+
   wrongs.forEach(w => {
-    if (String(w) !== String(correct)) set.add(String(w));
+    const value = String(w);
+    if (value !== correctText && value !== "NaN" && value !== "undefined") {
+      wrongSet.add(value);
+    }
   });
+
   let guard = 1;
-  while (set.size < 4) {
-    set.add(String(Number(correct) + guard));
+  const numericCorrect = Number(correct);
+
+  while (wrongSet.size < 3) {
+    if (!isNaN(numericCorrect)) {
+      wrongSet.add(String(numericCorrect + guard));
+      wrongSet.add(String(Math.max(1, numericCorrect - guard)));
+    } else {
+      wrongSet.add("Option " + guard);
+    }
     guard++;
   }
-  return shuffle(Array.from(set)).slice(0, 4);
+
+  const wrongChoices = shuffle(Array.from(wrongSet)).slice(0, 3);
+  return shuffle([correctText, ...wrongChoices]);
 }
 
 function makeNumberProblems() {
@@ -1614,6 +1629,7 @@ function startShapeProblems(){
   shapeAnswered = Array(15).fill(false);
   shapeSelectedAnswers = Array(15).fill(null);
   shapeScore = 0;
+  validateGeneratedQuestions(shapeProblems, "Shape Pattern");
   renderShapeQuestionButtons();
   renderShapeProblem();
   showSlide("shapeProblems");
@@ -1731,6 +1747,20 @@ function withFixedSeed(seed, callback){
   }
 }
 
+
+function validateGeneratedQuestions(questionSet, label){
+  const missing = [];
+  questionSet.forEach((q, index) => {
+    const choices = (q.choices || []).map(String);
+    if (!choices.includes(String(q.answer))) {
+      missing.push((index + 1) + ": " + String(q.answer));
+    }
+  });
+  if (missing.length > 0) {
+    console.warn(label + " missing answers:", missing);
+  }
+}
+
 function createSingleDecimalTest(testNumber){
   const fixedSeeds = {
     1: 6101,
@@ -1740,11 +1770,13 @@ function createSingleDecimalTest(testNumber){
   };
 
   return withFixedSeed(fixedSeeds[testNumber] || 6101, function(){
-    return shuffle([
+    const generated = shuffle([
       ...makeDecimalNumberQuestions(7),
       ...makeDecimalShapeQuestions(3),
       ...makeDecimalTableQuestions(10)
     ]);
+    validateGeneratedQuestions(generated, "Practice Test " + testNumber);
+    return generated;
   });
 }
 
